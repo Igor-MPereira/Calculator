@@ -5,6 +5,7 @@ import {
     Container,
     Button
 } from '@material-ui/core';
+import { isNumber } from 'util';
 
 export default class Buttons extends Component<ButtonsProps> {
     constructor(props: ButtonsProps) {

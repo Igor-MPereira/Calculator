@@ -70,11 +70,11 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
                 this.setState({displayResult: value1})    
             break;
         } 
-        this.setState({value1: varValue1.toString()})       
+        this.setState({value1: varValue1.toString(), value2: null})       
     }
 
     handlePrinting(value: string) {
-        if( value = '+' || '-' || '/' || '*' || '^' ) {
+        if( value === '+' || '-' || '/' || '*' || '^' ) {
             value = ` ${value} `;
         }
         this.setState({displayEquation: this.state.displayEquation + value} )
@@ -82,15 +82,15 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
 
     handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         if( this.state.isEqual ) {
-            this.setState({isEqual: false})
+            this.setState({isEqual: false, displayResult: null})
         }
-        if(isNumber(Number(event.currentTarget.value))) {
+        if(!isNaN(Number(event.currentTarget.value))) {
             this.handleValue(event.currentTarget.value)
         } else {
             this.handleOperator(event.currentTarget.value);
-        }
-        if( this.state.value2 != null ) {
-            this.handleOperation()
+            if( this.state.value2 != null ) {
+                this.handleOperation()
+            }
         }
         if( event.currentTarget.value === '=' && this.state.value2 == null) {
             if( this.state.value1 == null ) {
