@@ -8,6 +8,6 @@ export interface CalculatorState {
     prevOperator: string | null;
     memValue: string | null;
     displayResult: string | null;
-    displayEquation: string;
+    displayEquation: string | null;
     isEqual: boolean;
 }

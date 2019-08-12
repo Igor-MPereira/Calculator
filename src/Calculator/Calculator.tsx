@@ -66,9 +66,6 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
             case '^':
                 varValue1 = varValue1 ^ varValue2;    
             break;
-            case '=':
-                this.setState({displayResult: value1})    
-            break;
         } 
         this.setState({value1: varValue1.toString(), value2: null})       
     }
@@ -77,29 +74,37 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
         if( value === '+' || '-' || '/' || '*' || '^' ) {
             value = ` ${value} `;
         }
-        this.setState({displayEquation: this.state.displayEquation + value} )
+        if( value === '=' ) {
+            this.setState({displayEquation: ''})
+        } else {
+            this.setState({displayEquation: this.state.displayEquation + value} )
+        }
     }
 
     handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        let value = event.currentTarget.value;
         if( this.state.isEqual ) {
             this.setState({isEqual: false, displayResult: null})
         }
-        if(!isNaN(Number(event.currentTarget.value))) {
-            this.handleValue(event.currentTarget.value)
+        if(!isNaN(Number(value))) {
+            this.handleValue(value)
         } else {
-            this.handleOperator(event.currentTarget.value);
             if( this.state.value2 != null ) {
                 this.handleOperation()
             }
+            this.handleOperator(value);
         }
-        if( event.currentTarget.value === '=' && this.state.value2 == null) {
+        if( value === '=' && this.state.value2 == null) {
             if( this.state.value1 == null ) {
                 console.log('error');
             } else {
                 this.setState({displayResult: this.state.value1})
             }
         }
-        
+        if( value === '=' ) {
+            this.setState({displayResult: this.state.value1, displayEquation: '', isEqual: true})    
+        }
+        this.handlePrinting(value)
     }
 
     btnValues = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '^', '/', '='];

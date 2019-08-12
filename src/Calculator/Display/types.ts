@@ -1,5 +1,5 @@
 export interface IDisplayProps {
     displayResult: string | null;
-    displayEquation: string;
+    displayEquation: string | null;
     isEqual: boolean;
 }
