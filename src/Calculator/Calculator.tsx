@@ -1,124 +1,132 @@
-import React, { Component } from 'react';
-import { CalculatorProps, CalculatorState } from './types';
-import {
-    Grid,
-    Container
-} from '@material-ui/core';
+import React, { useState } from 'react';
+import { Grid } from '@material-ui/core';
+import { CalculatorProps } from './types';
+import Display from '../Components/Display';
+import ButtonBoard from '../Components/ButtonBoard';
 
-import Buttons from './Buttons'
-import Display from './Display'
-import { isNumber } from 'util';
+export default function Calculator(props: CalculatorProps) {
+    const buttonValues = ['1','2','3','4','5','6','7','8','9','0','+','-','x','/','^','='];
+    const [ number1, setNumber1 ] = useState<string | null>(null);
+    const [ number2, setNumber2 ] = useState<string | null>(null);
+    const [ operator, setOperator ] = useState<string | null>(null);
+    const [ displayEq, setDisplayEq ] = useState<string>('');
+    const [ displayResult, setDisplayResult ] = useState<string | null>(null);
 
-export default class Calculator extends Component<CalculatorProps, CalculatorState> {
-    constructor(props: CalculatorProps) {
-        super(props);
-        this.state = {
-            value1: null,
-            value2: null,
-            operator: null,
-            prevOperator: null,
-            memValue: null,
-            displayResult: null,
-            displayEquation: '',
-            isEqual: false
-        }      
-    }
-
-    handleValue(value: string) {
-        if(this.state.operator == null) {
-            (this.state.value1 != null)?
-                this.setState( {value1: this.state.value1 + value} )
-            :
-                this.setState( {value1: value} )
-        } else {
-            (this.state.value2 != null)?
-                this.setState( {value2: this.state.value2 + value} )
-            :
-                this.setState( {value2: value} )
-        }
-    }
-
-    handleOperator(value: string) {
-        this.setState({
-            prevOperator: this.state.operator,
-            operator: value
-        })
-    }
-
-    handleOperation() {
-        const { operator, value1, value2 } = this.state;
-        let varValue1: number = Number(value1);
-        let varValue2: number = Number(value2);
-
-        switch (operator) {
-            case '+':
-                varValue1 = varValue1 + varValue2;    
-            break;
-            case '-':
-                varValue1 = varValue1 - varValue2;    
-            break;
-            case '*':
-                varValue1 = varValue1 * varValue2;    
-            break;
-            case '/':
-                varValue1 = varValue1 / varValue2;    
-            break;
-            case '^':
-                varValue1 = varValue1 ^ varValue2;    
-            break;
-        } 
-        this.setState({value1: varValue1.toString(), value2: null})       
-    }
-
-    handlePrinting(value: string) {
-        if( value === '+' || '-' || '/' || '*' || '^' ) {
-            value = ` ${value} `;
-        }
-        if( value === '=' ) {
-            this.setState({displayEquation: ''})
-        } else {
-            this.setState({displayEquation: this.state.displayEquation + value} )
-        }
-    }
-
-    handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        let value = event.currentTarget.value;
-        if( this.state.isEqual ) {
-            this.setState({isEqual: false, displayResult: null})
-        }
-        if(!isNaN(Number(value))) {
-            this.handleValue(value)
-        } else {
-            if( this.state.value2 != null ) {
-                this.handleOperation()
-            }
-            this.handleOperator(value);
-        }
-        if( value === '=' && this.state.value2 == null) {
-            if( this.state.value1 == null ) {
-                console.log('error');
+    function handleChangeNumber(value: string) {
+        if( operator == null ) {
+            if(number1 == null) {
+                setNumber1(value)
             } else {
-                this.setState({displayResult: this.state.value1})
+                setNumber1( prevNumber1 => prevNumber1 + value );
+            }
+        } else if( operator === '=') {
+            setNumber1(value);
+            setOperator(null);
+        } else {
+            if(number2 == null) {
+                setNumber2(value)
+            } else {
+                setNumber2( prevNumber2 => prevNumber2 + value );
             }
         }
-        if( value === '=' ) {
-            this.setState({displayResult: this.state.value1, displayEquation: '', isEqual: true})    
+    }
+
+    function handleChangeOperator(value: string) {
+        setOperator(value);
+    }
+
+    function handleWriteEq(value: string) {
+        let newValue: string = value;
+        if( value === ('+' || '-' || 'x' || '^' || '/') ) {
+            newValue = `  ${value}  `;
+        } else if( value === '=' ) {
+            newValue = ''
         }
-        this.handlePrinting(value)
+        setDisplayEq( prevDisplayEq => prevDisplayEq + newValue );
+        if(displayResult != null) {
+            setDisplayResult(null);
+        }
     }
 
-    btnValues = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '^', '/', '='];
+    function handleDisplayResult(value: string, result: string) {
+        if(value === '=') {
+            setDisplayEq('')
+            setDisplayResult(result)
+        }
+    }
 
-    render() {
-        return(
-            <Grid container justify='center' alignContent='center' alignItems='center'>
-                <Container>
-                    <Grid item>
-                        <Display displayResult={this.state.displayResult} isEqual={this.state.isEqual} displayEquation={this.state.displayEquation} />
-                        <Buttons btnValues={this.btnValues} handleClick={this.handleClick} />
-                    </Grid>
-                </Container>
+    async function handleClickButton(value: string) {
+        handleWriteEq(value);
+        if(!isNaN(Number(value))) {
+            handleChangeNumber(value);
+        } else {
+            await handleOperation(value);
+            await handleChangeOperator(value);
+        }
+    }
+
+    async function handleOperation(value: string) {
+        const value1: number = Number(number1);
+        const value2: number = Number(number2);
+        let result: number = Number(number1);      
+
+        if(number2 != null) {
+            switch(operator) {
+                case '+': 
+                    result = value1 + value2
+                break;
+                case '-': 
+                    result = value1 - value2
+                break;
+                case 'x': 
+                    result = value1 * value2
+                break;
+                case '/': 
+                    result = value1 / value2
+                break;
+                case '^':
+                    let powerResult: number = value1;
+                    if(value2 === 0) {
+                        powerResult = 1
+                    }else if(value2 < 0) {
+
+                    } else {
+                        for(let i = 1; i < value2; i++) {
+                            powerResult = powerResult * value1
+                        }
+                    }
+                    result = powerResult
+            }
+        }
+
+        await setNumber1(result.toString());
+        setNumber2(null);
+        handleDisplayResult(value, result.toString());
+    }
+
+    return (
+        <Grid 
+            container
+            justify='center'
+        >   
+            <Grid
+                item
+                xs={12}
+            >
+                <Display 
+                    displayEq={displayEq}
+                    displayResult={displayResult}
+                />
             </Grid>
-        );
-    }
-}
+            <Grid
+                item
+                xs={4}
+            >
+                <ButtonBoard 
+                    buttonValues={buttonValues} 
+                    handleClickButton={handleClickButton}
+                />
+            </Grid>
+        </Grid>
+    );
+} 

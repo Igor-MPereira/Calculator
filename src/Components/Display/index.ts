@@ -1,3 +1,2 @@
 import Display from './Display';
-
-export default Display;
+export default Display; 
