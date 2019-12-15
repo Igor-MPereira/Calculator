@@ -1,74 +1,116 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
-import { CalculatorProps } from './types';
+import { CalculatorProps, CalculatorState } from './types';
 import Display from '../Components/Display';
 import ButtonBoard from '../Components/ButtonBoard';
+import { toIntPower, Factorial, Sin, Cos, Tan } from '../Helpers/HelperFunctions';
 
-export default function Calculator(props: CalculatorProps) {
-    const buttonValues = ['1','2','3','4','5','6','7','8','9','0','+','-','x','/','^','='];
-    const [ number1, setNumber1 ] = useState<string | null>(null);
-    const [ number2, setNumber2 ] = useState<string | null>(null);
-    const [ operator, setOperator ] = useState<string | null>(null);
-    const [ displayEq, setDisplayEq ] = useState<string>('');
-    const [ displayResult, setDisplayResult ] = useState<string | null>(null);
+export default class Calculator extends Component<CalculatorProps, CalculatorState> {
+    public buttonValues = ['1','2','3','4','5','6','7','8','9','0','+','-','x','/','^','=', '!', 'sin (x)', 'cos (x)', 'tan (x)', '.', 'c'];
+    
+    constructor(props: CalculatorProps) {
+        super(props);
 
-    function handleChangeNumber(value: string) {
+        this.state = {
+            number1: null,
+            number2: null,
+            operator: null,
+            displayResult: null,
+            displayEq: ''
+        };
+
+        // vinculando metodos
+        this.handleClickButton = this.handleClickButton.bind(this);
+    }
+
+    public handleChangeNumber(value: string) {
+        const { operator, number1, number2 } = this.state;
         if( operator == null ) {
             if(number1 == null) {
-                setNumber1(value)
+                this.setState({
+                    number1: value
+                });
             } else {
-                setNumber1( prevNumber1 => prevNumber1 + value );
+                this.setState({
+                    number1: number1 + value
+                });
             }
         } else if( operator === '=') {
-            setNumber1(value);
-            setOperator(null);
+            this.setState({
+                number1: value,
+                operator: null
+            })
         } else {
             if(number2 == null) {
-                setNumber2(value)
+                this.setState({
+                    number2: value
+                })
             } else {
-                setNumber2( prevNumber2 => prevNumber2 + value );
+                this.setState({
+                    number2: number2 + value
+                })
             }
         }
     }
 
-    function handleChangeOperator(value: string) {
-        setOperator(value);
+    public handleChangeOperator(value: string) {
+        this.setState({
+            operator: value
+        })
     }
 
-    function handleWriteEq(value: string) {
+    public handleWriteEq(value: string) {
+        const { displayEq, displayResult } = this.state;
         let newValue: string = value;
         if( value === ('+' || '-' || 'x' || '^' || '/') ) {
             newValue = `  ${value}  `;
         } else if( value === '=' ) {
             newValue = ''
         }
-        setDisplayEq( prevDisplayEq => prevDisplayEq + newValue );
+        this.setState({
+            displayEq: displayEq + newValue
+        })
         if(displayResult != null) {
-            setDisplayResult(null);
+            this.setState({
+                displayResult: null
+            })
         }
     }
 
-    function handleDisplayResult(value: string, result: string) {
+    public handleDisplayResult(value: string, result: string) {
         if(value === '=') {
-            setDisplayEq('')
-            setDisplayResult(result)
+            this.setState({
+                displayResult: result,
+                displayEq: ''
+            })
         }
     }
 
-    async function handleClickButton(value: string) {
-        handleWriteEq(value);
-        if(!isNaN(Number(value))) {
-            handleChangeNumber(value);
+    public async handleClickButton(value: string) {
+        if (value === 'c') {
+            this.setState({
+                number1: null,
+                number2: null,
+                operator: null,
+                displayEq: '',
+                displayResult: null
+            })
         } else {
-            await handleOperation(value);
-            await handleChangeOperator(value);
+            this.handleWriteEq(value);
+            if(!isNaN(Number(value)) || value === '.') {
+                this.handleChangeNumber(value);
+            } else {
+                await this.handleOperation(value);
+                this.handleChangeOperator(value);
+            }
         }
     }
 
-    async function handleOperation(value: string) {
+    async handleOperation(value: string) {
+        const { operator, number1, number2 } = this.state;
         const value1: number = Number(number1);
         const value2: number = Number(number2);
-        let result: number = Number(number1);      
+        let result: number = value1;
 
         if(number2 != null) {
             switch(operator) {
@@ -85,48 +127,59 @@ export default function Calculator(props: CalculatorProps) {
                     result = value1 / value2
                 break;
                 case '^':
-                    let powerResult: number = value1;
-                    if(value2 === 0) {
-                        powerResult = 1
-                    }else if(value2 < 0) {
-
-                    } else {
-                        for(let i = 1; i < value2; i++) {
-                            powerResult = powerResult * value1
-                        }
-                    }
-                    result = powerResult
+                    result = toIntPower(result, value2);
+                break;
+            } 
+        } else {
+            switch (operator) {
+                case '!':
+                    result = Factorial(result);
+                break;
+                case 'sin (x)':
+                    result = Sin(result, 'DEG');
+                break;
+                case 'cos (x)':
+                    result = Cos(result, 'DEG');
+                break;
+                case 'tan (x)':
+                    result = Tan(result, 'DEG');
+                break;
             }
         }
 
-        await setNumber1(result.toString());
-        setNumber2(null);
-        handleDisplayResult(value, result.toString());
+        this.setState({
+            number1: result.toString(),
+            number2: null
+        })
+        this.handleDisplayResult(value, result.toString());
     }
 
-    return (
-        <Grid 
-            container
-            justify='center'
-        >   
-            <Grid
-                item
-                xs={12}
-            >
-                <Display 
-                    displayEq={displayEq}
-                    displayResult={displayResult}
-                />
+    render() {
+        const { displayEq, displayResult } = this.state;
+        return (
+            <Grid 
+                container
+                justify='center'
+            >   
+                <Grid
+                    item
+                    xs={12}
+                >
+                    <Display 
+                        displayEq={displayEq}
+                        displayResult={displayResult}
+                    />
+                </Grid>
+                <Grid
+                    item
+                    xs={4}
+                >
+                    <ButtonBoard 
+                        buttonValues={this.buttonValues} 
+                        handleClickButton={this.handleClickButton}
+                    />
+                </Grid>
             </Grid>
-            <Grid
-                item
-                xs={4}
-            >
-                <ButtonBoard 
-                    buttonValues={buttonValues} 
-                    handleClickButton={handleClickButton}
-                />
-            </Grid>
-        </Grid>
-    );
+        );
+    }
 } 
