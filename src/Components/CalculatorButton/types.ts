@@ -1,4 +1,6 @@
+import CalcButton from "../../Helpers/CalcButton";
+
 export interface CalculatorButtonProps {
-    buttonValue: string;
+    buttonValue: CalcButton;
     handleClickButton(value: string): void;
 }

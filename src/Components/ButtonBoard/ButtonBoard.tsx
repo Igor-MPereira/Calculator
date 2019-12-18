@@ -26,7 +26,7 @@ export default function ButtonBoard(props: ButtonBoardProps) {
                         item
                         xs={3}
                         className={classes.ButtonGrid}
-                        key={buttonValue}
+                        key={buttonValue.Value}
                     >
                         <CalculatorButton 
                             buttonValue={buttonValue} 

@@ -3,10 +3,37 @@ import { Grid } from '@material-ui/core';
 import { CalculatorProps, CalculatorState } from './types';
 import Display from '../Components/Display';
 import ButtonBoard from '../Components/ButtonBoard';
-import { toIntPower, Factorial, Sin, Cos, Tan } from '../Helpers/HelperFunctions';
+import { Factorial } from '../Helpers/HelperFunctions';
+import 'linq4js';
+import CalcButton from '../Helpers/CalcButton';
 
 export default class Calculator extends Component<CalculatorProps, CalculatorState> {
-    public buttonValues = ['1','2','3','4','5','6','7','8','9','0','+','-','x','/','^','=', '!', 'sin (x)', 'cos (x)', 'tan (x)', '.', 'c'];
+    public buttonValues: Array<CalcButton> = [
+        new CalcButton(0, '1', '1'),
+        new CalcButton(0, '2', '2'),
+        new CalcButton(0, '3', '3'),
+        new CalcButton(0, '4', '4'),
+        new CalcButton(0, '5', '5'),
+        new CalcButton(0, '6', '6'),
+        new CalcButton(0, '7', '7'),
+        new CalcButton(0, '8', '8'),
+        new CalcButton(0, '9', '9'),
+        new CalcButton(0, '0', '0'),
+        new CalcButton(2, '+', '+'),
+        new CalcButton(2, '-', '-'),
+        new CalcButton(2, 'x', 'x'),
+        new CalcButton(2, '/', '/'),
+        new CalcButton(2, '^', '^'),
+        new CalcButton(4, '=', '='),
+        new CalcButton(1, '!', '!'),
+        new CalcButton(1, 'sin(x)', 'sin()'),
+        new CalcButton(1, 'cos(x)', 'cos()'),
+        new CalcButton(1, 'tan(x)', 'tan()'),
+        new CalcButton(0, '.', '.'),
+        new CalcButton(5, 'c', 'clear'),
+        new CalcButton(0, 'π', `${Math.PI}`),
+        new CalcButton(0, 'e', `${Math.E}`),
+    ];
     
     constructor(props: CalculatorProps) {
         super(props);
@@ -19,7 +46,6 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
             displayEq: ''
         };
 
-        // vinculando metodos
         this.handleClickButton = this.handleClickButton.bind(this);
     }
 
@@ -127,7 +153,7 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
                     result = value1 / value2
                 break;
                 case '^':
-                    result = toIntPower(result, value2);
+                    result = Math.pow(value1, value2);
                 break;
             } 
         } else {
@@ -136,13 +162,13 @@ export default class Calculator extends Component<CalculatorProps, CalculatorSta
                     result = Factorial(result);
                 break;
                 case 'sin (x)':
-                    result = Sin(result, 'DEG');
+                    result = Math.sin(value1);
                 break;
                 case 'cos (x)':
-                    result = Cos(result, 'DEG');
+                    result = Math.cos(value1);
                 break;
                 case 'tan (x)':
-                    result = Tan(result, 'DEG');
+                    result = Math.tan(value1);
                 break;
             }
         }

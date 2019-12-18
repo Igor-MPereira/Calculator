@@ -9,10 +9,10 @@ export default function CalculatorButton(props: CalculatorButtonProps) {
             variant='contained'
             color='primary'
             size='small'
-            value={props.buttonValue}
+            value={props.buttonValue.Value}
             onClick={e => props.handleClickButton(e.currentTarget.value)}
         >
-            {props.buttonValue.toLowerCase()}
+            {props.buttonValue.label}
         </Button>
     );
 }
