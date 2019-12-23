@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
-import { CalculatorProps, CalculatorState } from './types';
+import { CalculatorMediumState } from './types';
 import Display from '../Components/Display';
 import ButtonBoard from '../Components/ButtonBoard';
 import { Factorial, isCalcButton } from '../Helpers/HelperFunctions';
@@ -10,12 +10,12 @@ import { EButtonTypeEnum } from '../Helpers/Enums/ButtonTypeEnum';
 import { EDifficultyLevelEnum } from '../Helpers/Enums/DifficultyLevelEnum';
 import { ButtonValues } from '../App';
 
-export default class CalculatorMedium extends Component<CalculatorProps, CalculatorState> {
+export default class CalculatorMedium extends Component<{}, CalculatorMediumState> {
     private buttonValues: Array<CalcButton> = ButtonValues;
 
     private DifficultyLevel: EDifficultyLevelEnum = EDifficultyLevelEnum.medium;
     
-    constructor(props: CalculatorProps) {
+    constructor(props: {}) {
         super(props);
 
         this.state = {
@@ -80,11 +80,18 @@ export default class CalculatorMedium extends Component<CalculatorProps, Calcula
 
     private handleWriteEq(btn: CalcButton) {
         const { displayEq, displayResult } = this.state;
-        let newValue: CalcButton = {...btn};
-        if( btn.Value === ('+' || '-' || 'x' || '^' || '/') ) {
-            newValue.Value = `  ${btn.Value}  `;
-        } else if( btn.Value === '=' ) {
-            newValue.Value = ''
+        let newValue: string = btn.Value;
+        switch(btn.Value) {
+            case '+':
+            case '-':
+            case 'x':
+            case '^':
+            case '/':
+                newValue = ` ${btn.Value} `;
+            break;
+            case '=':
+                newValue = '';
+            break;
         }
         
         if(btn.ValueType === EButtonTypeEnum.numero && displayResult) {
@@ -93,7 +100,7 @@ export default class CalculatorMedium extends Component<CalculatorProps, Calcula
             });
         } else {
             this.setState({
-                displayEq: displayEq + newValue.Value
+                displayEq: displayEq + newValue
             });
         }
 
@@ -119,6 +126,7 @@ export default class CalculatorMedium extends Component<CalculatorProps, Calcula
                 number1: null,
                 number2: null,
                 binaryOperator: null,
+                unaryOperator: null,
                 displayEq: '',
                 displayResult: null
             });

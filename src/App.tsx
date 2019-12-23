@@ -1,5 +1,4 @@
 import React from 'react';
-import Calculator from './Calculator';
 import { CssBaseline, MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core';
 import CalcButton from './Helpers/CalcButton';
 import Routes from './Routes';

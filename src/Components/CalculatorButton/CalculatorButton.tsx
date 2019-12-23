@@ -2,7 +2,6 @@ import React from 'react';
 import { CalculatorButtonProps } from './types';
 import { Grid, Button, makeStyles, Theme, createStyles } from '@material-ui/core';
 import CalcButton from '../../Helpers/CalcButton';
-import Calculator from '../../Calculator';
 import { EDifficultyLevelEnum } from '../../Helpers/Enums/DifficultyLevelEnum';
 
 export default function CalculatorButton(props: CalculatorButtonProps) {

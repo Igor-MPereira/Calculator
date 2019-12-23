@@ -44,6 +44,22 @@ export default function ButtonBoard(props: ButtonBoardProps) {
                     />
                 </Grid>
             );
+        } else if(calcLvl === EDifficultyLevelEnum.easy && props.stringButtonValues) {
+            return props.stringButtonValues.map(buttonValue =>
+                props.handleClickButtonString &&
+                <Grid
+                    item
+                    xs={3}
+                    className={classes.ButtonGrid}
+                    key={buttonValue}
+                >
+                    <CalculatorButton 
+                        calcLvl={calcLvl}
+                        stringButtonValue={buttonValue} 
+                        handleClickButton={props.handleClickButtonString}
+                    />
+                </Grid>
+            );
         }
     }
 

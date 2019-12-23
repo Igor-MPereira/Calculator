@@ -1,2 +1,4 @@
 import CalculatorMedium from './CalculatorMedium';
-export default CalculatorMedium;
+import CalculatorEasy from './CalculatorEasy';
+
+export {CalculatorMedium, CalculatorEasy};
