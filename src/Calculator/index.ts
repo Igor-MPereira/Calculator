@@ -1,2 +1,2 @@
-import Calculator from './Calculator';
-export default Calculator;
+import CalculatorMedium from './CalculatorMedium';
+export default CalculatorMedium;
