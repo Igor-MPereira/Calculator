@@ -4,13 +4,14 @@ import {
     Switch,
     Route
 } from 'react-router-dom';
-import {CalculatorMedium, CalculatorEasy} from '../Calculator';
+import {CalculatorMedium, CalculatorEasy, CalculatorHard} from '../Calculator';
 
 const router = () => (
     <BrowserRouter>
         <Switch>
-            <Route path='/easy' component={CalculatorEasy} />
+            <Route exact path={['/' ,'/easy']} component={CalculatorEasy} />
             <Route path='/medium' component={CalculatorMedium} />
+            <Route path='/hard' component={CalculatorHard} />
         </Switch>
     </BrowserRouter>
 );

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
-import { CalculatorMediumState } from './types';
+import { ICalculatorMediumState } from './types';
 import Display from '../Components/Display';
 import ButtonBoard from '../Components/ButtonBoard';
-import { Factorial, isCalcButton } from '../Helpers/HelperFunctions';
+import Calculator from '../Helpers/Calculator';
 import 'linq4js';
 import CalcButton from '../Helpers/CalcButton';
 import { EButtonTypeEnum } from '../Helpers/Enums/ButtonTypeEnum';
 import { EDifficultyLevelEnum } from '../Helpers/Enums/DifficultyLevelEnum';
-import { ButtonValues } from '../App';
 
-export default class CalculatorMedium extends Component<{}, CalculatorMediumState> {
-    private buttonValues: Array<CalcButton> = ButtonValues;
+export default class CalculatorMedium extends Component<{}, ICalculatorMediumState> {
+    private readonly ButtonValues: Array<CalcButton> = Calculator.ButtonValues;
 
-    private DifficultyLevel: EDifficultyLevelEnum = EDifficultyLevelEnum.medium;
+    private readonly DifficultyLevel: EDifficultyLevelEnum = EDifficultyLevelEnum.medium;
     
     constructor(props: {}) {
         super(props);
@@ -119,7 +118,6 @@ export default class CalculatorMedium extends Component<{}, CalculatorMediumStat
     }
 
     public async handleClickButton(btn: CalcButton) {
-        const { number1 } = this.state;
         let done = false;
         if (btn.Value === 'clear') {
             this.setState({
@@ -155,30 +153,30 @@ export default class CalculatorMedium extends Component<{}, CalculatorMediumStat
         let button: CalcButton | null = this.state.number2 ? {...this.state.number2} as CalcButton : this.state.number1 ? {...this.state.number1} as CalcButton : null;
 
         return new Promise((resolve, reject) => {    
-            if(isCalcButton(button)) {
+            if(Calculator.isCalcButton(button)) {
                 let number = Number(button.Value);
                 const initValue = number;
 
                 switch (uOp.Value) {
                     case '!':
-                        number = Factorial(initValue);
+                        number = Calculator.Factorial(initValue);
                         if(initValue.toString().search('.') > -1) {
                             number = NaN;
                         }
                     break;
-                    case 'sin()':
+                    case 'sin':
                         number = Math.sin(initValue);
                         if(initValue % Math.PI === 0) {
                             number = 0;
                         }
                     break;
-                    case 'cos()':
+                    case 'cos':
                         number = Math.cos(initValue);
                         if(initValue % (Math.PI / 2) === 0 && initValue % Math.PI !== 0) {
                             number = 0;
                         }
                     break;
-                    case 'tan()':
+                    case 'tan':
                         number = Math.tan(initValue);
                         if(initValue % Math.PI === 0) {
                             number = 0;
@@ -275,7 +273,7 @@ export default class CalculatorMedium extends Component<{}, CalculatorMediumStat
                 >
                     <ButtonBoard 
                         calcLvl={this.DifficultyLevel}
-                        buttonValues={this.buttonValues} 
+                        buttonValues={this.ButtonValues} 
                         handleClickButton={this.handleClickButton}
                     />
                 </Grid>

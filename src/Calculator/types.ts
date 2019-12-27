@@ -1,6 +1,6 @@
 import CalcButton from "../Helpers/CalcButton";
 
-export interface CalculatorMediumState {
+export interface ICalculatorMediumState {
     number1: CalcButton | null; 
     number2: CalcButton | null; 
     binaryOperator: CalcButton | null; 
@@ -9,10 +9,17 @@ export interface CalculatorMediumState {
     displayResult: string | null; 
 }
 
-export interface CalculatorEasyState {
+export interface ICalculatorEasyState {
     number1: string | null;
     number2: string | null;
     operator: string | null;
     displayEq: string;
     displayResult: string | null;
+}
+
+export interface ICalculatorHardState {
+    Expression: Array<CalcButton> | null;
+    displayEx: string;
+    displayResult: string | null;
+    isResult: boolean;
 }

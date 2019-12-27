@@ -3,5 +3,6 @@ export enum EButtonTypeEnum {
     unario = 1,
     binario = 2,
     equals = 3,
-    other = 4
+    clear = 4,
+    replace = 5
 }

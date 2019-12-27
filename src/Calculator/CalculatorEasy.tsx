@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { CalculatorEasyState } from './types';
-import { StringButtonValues } from '../App';
+import { ICalculatorEasyState } from './types';
 import { EDifficultyLevelEnum } from '../Helpers/Enums/DifficultyLevelEnum';
 import { Grid } from '@material-ui/core';
 import Display from '../Components/Display';
 import ButtonBoard from '../Components/ButtonBoard';
-import { Factorial } from '../Helpers/HelperFunctions';
+import Calculator from '../Helpers/Calculator';
 
-export default class CalculatorEasy extends Component<{}, CalculatorEasyState> {
-    private StringButtonValues: Array<string> = StringButtonValues;
+export default class CalculatorEasy extends Component<{}, ICalculatorEasyState> {
+    private readonly StringButtonValues: Array<string> = Calculator.StringButtonValues;
 
-    private DifficultyLevel: EDifficultyLevelEnum = EDifficultyLevelEnum.easy;
+    private readonly DifficultyLevel: EDifficultyLevelEnum = EDifficultyLevelEnum.easy;
 
     constructor(props: {}) {
         super(props);
@@ -160,7 +159,7 @@ export default class CalculatorEasy extends Component<{}, CalculatorEasyState> {
             } else {
                 switch(operator) {
                     case '!':
-                        result = Factorial(value1);
+                        result = Calculator.Factorial(value1);
                         if(number1.search('.') > -1) {
                             result = NaN;
                         }

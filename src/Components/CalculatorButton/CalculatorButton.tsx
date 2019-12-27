@@ -11,7 +11,7 @@ export default function CalculatorButton(props: CalculatorButtonProps) {
             return (
                 <Button
                     variant='contained'
-                    color='secondary'
+                    color={calcLvl === EDifficultyLevelEnum.hard ? 'secondary' : 'default'}
                     size='small'
                     value={props.buttonValue.Value}
                     onClick={(e) => {
